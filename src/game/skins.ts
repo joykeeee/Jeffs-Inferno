@@ -1,0 +1,58 @@
+import { GhostSkin } from '../types';
+
+export const GHOST_SKINS: GhostSkin[] = [
+  {
+    id: 'classic',
+    name: 'Classic Jeff',
+    unlocked: true,
+    cost: 0,
+    mainColor: '#f8fafc',
+    glowColor: '#38bdf8',
+    eyeColor: '#0f172a',
+  },
+  {
+    id: 'frost',
+    name: 'Cocytus Frost',
+    unlocked: false,
+    cost: 15,
+    mainColor: '#a5f3fc',
+    glowColor: '#06b6d4',
+    eyeColor: '#083344',
+  },
+  {
+    id: 'emerald',
+    name: 'Stygian Spirit',
+    unlocked: false,
+    cost: 25,
+    mainColor: '#86efac',
+    glowColor: '#22c55e',
+    eyeColor: '#052e16',
+  },
+  {
+    id: 'ember',
+    name: 'Phlegethon Ember',
+    unlocked: false,
+    cost: 40,
+    mainColor: '#fed7aa',
+    glowColor: '#f97316',
+    eyeColor: '#431407',
+  },
+  {
+    id: 'amethyst',
+    name: 'Malebolge Shadow',
+    unlocked: false,
+    cost: 60,
+    mainColor: '#e9d5ff',
+    glowColor: '#a855f7',
+    eyeColor: '#2e1065',
+  },
+  {
+    id: 'astral',
+    name: 'Astral Ascent',
+    unlocked: false,
+    cost: 100,
+    mainColor: '#fef08a',
+    glowColor: '#eab308',
+    eyeColor: '#422006',
+  },
+];

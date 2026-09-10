@@ -1,0 +1,6 @@
+{
+  "name": "Jeff's Inferno",
+  "description": "A retro pixel-art roguelike puzzle platformer where Jeff the ghost escapes the circles of Dante's Inferno.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
