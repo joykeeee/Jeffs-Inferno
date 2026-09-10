@@ -311,7 +311,7 @@ export function generateLevel(
 }
 
 // --------------------------------------------------------------------------
-// ARCHETYPE BUILDERS
+// ARCHETYPE BUILDERS (Challenging platform spacing, float chasms & dash leaps)
 // --------------------------------------------------------------------------
 
 function buildSwitchback(
@@ -322,53 +322,62 @@ function buildSwitchback(
   setSpawn: (x: number, y: number) => void,
   setExit: (x: number, y: number, ledgeY: number) => void
 ) {
-  // Start on Left
+  // Start on Low West (ledge at y=18)
   setSpawn(3, 17);
-  // Exit on High Right
-  setExit(27, 3, 5);
+  // Exit on High East (ledge at y=5)
+  setExit(26, 3, 5);
 
-  const jitterX = () => Math.floor(rng() * 3) - 1;
+  const j = () => Math.floor(rng() * 2); // 0 or 1 micro variation
 
-  // Tier 1: Low-West -> East sweep (y = 15)
-  platforms.push({ startX: 7 + jitterX(), endX: 13 + jitterX(), y: 15 });
+  // 1. Warmup Step (gap 2 from spawn x=5, up 2 to y=16)
+  platforms.push({ startX: 7 + j(), endX: 9 + j(), y: 16 });
 
-  // Tier 2: Mid-East terrace (y = 13)
-  platforms.push({ startX: 17 + jitterX(), endX: 24 + jitterX(), y: 13 });
+  // 2. Precision Leap ("Barely make it" flat jump: gap 5 empty tiles from x=10 to x=15)
+  platforms.push({ startX: 15 + j(), endX: 17 + j(), y: 15 });
 
-  // Tier 3: Mid-West turnback (y = 10)
-  platforms.push({ startX: 8 + jitterX(), endX: 16 + jitterX(), y: 10 });
+  // 3. Float Abyss (Gap 6 empty tiles horizontally & 2 up: standard jump drops short, player benefits heavily from hold-to-float or dash!)
+  platforms.push({ startX: 23 + j(), endX: 25 + j(), y: 13 });
 
-  // Puzzle Wing: Far-West balcony on Tier 3 (y = 8)
-  platforms.push({ startX: 2 + jitterX(), endX: 7 + jitterX(), y: 8 });
-
-  // Tier 4: Upper-Central bridge (y = 6)
-  const isMalebolge = circleId === 8;
-  platforms.push({
-    startX: 12 + jitterX(),
-    endX: 19 + jitterX(),
-    y: 6,
-    tileType: isMalebolge ? TileType.CRUMBLING : TileType.SOLID,
-  });
-
-  // Tier 5: High-East approach to exit (y = 5)
-  platforms.push({ startX: 23 + jitterX(), endX: 29, y: 5 });
-
-  // Moving Platform bridging Tier 2 (x~20, y=13) to Tier 3 (x~16, y=10)
+  // Moving Platform ferry assisting the lower abyss (x: 17 -> 22 at y=14)
   movingPlatforms.push({
     id: `mp-sw-${Math.floor(rng() * 9999)}`,
-    x: 15 * TILE_SIZE,
-    y: 11 * TILE_SIZE,
-    width: TILE_SIZE * 3,
+    x: 18 * TILE_SIZE,
+    y: 14 * TILE_SIZE,
+    width: TILE_SIZE * 2.5,
     height: TILE_SIZE * 0.7,
-    startX: 14 * TILE_SIZE,
-    startY: 11 * TILE_SIZE,
-    targetX: 19 * TILE_SIZE,
-    targetY: 11 * TILE_SIZE,
-    speed: 1.1 + rng() * 0.3,
+    startX: 17 * TILE_SIZE,
+    startY: 14 * TILE_SIZE,
+    targetX: 22 * TILE_SIZE,
+    targetY: 14 * TILE_SIZE,
+    speed: 1.15,
     currentT: 0,
     direction: 1,
     isVertical: false,
   });
+
+  // 4. Switchback Mid Pivot (Westward jump: gap 5 tiles, up 2)
+  platforms.push({ startX: 15 + j(), endX: 17 + j(), y: 11 });
+
+  // 5. Puzzle Wing / Western Balcony (Gap 5 tiles Westward across the chasm: float glide feels exhilarating)
+  platforms.push({ startX: 7 + j(), endX: 10 + j(), y: 9 });
+
+  // 6. High Precarious Stepping Stones (Crumbling in Circle 8, tight 2-tile perches elsewhere)
+  const isMalebolge = circleId === 8;
+  platforms.push({
+    startX: 13 + j(),
+    endX: 14 + j(),
+    y: 7,
+    tileType: isMalebolge ? TileType.CRUMBLING : TileType.SOLID,
+  });
+  platforms.push({
+    startX: 18 + j(),
+    endX: 19 + j(),
+    y: 6,
+    tileType: isMalebolge ? TileType.CRUMBLING : TileType.SOLID,
+  });
+
+  // 7. High East Exit Threshold (Gap 5 tiles across high void)
+  platforms.push({ startX: 24, endX: 28, y: 5 });
 }
 
 function buildTwinSpires(
@@ -380,67 +389,48 @@ function buildTwinSpires(
   setExit: (x: number, y: number, ledgeY: number) => void
 ) {
   setSpawn(3, 17);
-  setExit(27, 4, 6);
+  setExit(26, 3, 5);
 
-  const j = () => Math.floor(rng() * 3) - 1;
+  const j = () => Math.floor(rng() * 2);
 
-  // WEST SPIRE (x: 2..10)
-  platforms.push({ startX: 2, endX: 7 + j(), y: 18 }); // Base
-  platforms.push({ startX: 4 + j(), endX: 10 + j(), y: 15 }); // West Tier 1
-  platforms.push({ startX: 2 + j(), endX: 8 + j(), y: 12 }); // West Tier 2
-  platforms.push({ startX: 4 + j(), endX: 10 + j(), y: 9 }); // West Tier 3 (Puzzle)
-  platforms.push({ startX: 3 + j(), endX: 8 + j(), y: 6 }); // West Pinnacle
+  // WEST SPIRE (Ascent with tight vertical leaps)
+  platforms.push({ startX: 2, endX: 5, y: 18 }); // Base
+  platforms.push({ startX: 7 + j(), endX: 9 + j(), y: 16 }); // West Perch 1 (gap 2, up 2)
+  platforms.push({ startX: 2 + j(), endX: 4 + j(), y: 13 }); // West Perch 2 (turnback: gap 3, up 3)
+  platforms.push({ startX: 7 + j(), endX: 9 + j(), y: 10 }); // West Perch 3 / Puzzle (gap 3, up 3)
+  platforms.push({ startX: 3 + j(), endX: 5 + j(), y: 7 }); // West Pinnacle
 
-  // EAST SPIRE (x: 21..29)
-  platforms.push({ startX: 22 + j(), endX: 28 + j(), y: 15 }); // East Tier 1
-  platforms.push({ startX: 21 + j(), endX: 27 + j(), y: 12 }); // East Tier 2
-  platforms.push({ startX: 22 + j(), endX: 28 + j(), y: 9 }); // East Tier 3
-  platforms.push({ startX: 23, endX: 29, y: 6 }); // East Pinnacle (Exit)
-
-  // CENTRAL CHASM BRIDGES (x: 11..20)
-  // Mid-air stepping stone
+  // THE GREAT CHASM (Spire to Spire crossing: gap 6 empty tiles between x=9 and x=15)
+  // Mid-air Pedestal (Floating island suspended in the middle of the spires)
   platforms.push({
-    startX: 13 + j(),
+    startX: 15 + j(),
     endX: 17 + j(),
     y: 9,
     tileType: circleId === 8 ? TileType.CRUMBLING : TileType.ONE_WAY,
   });
 
-  // Low-to-Mid Chasm horizontal moving ferry
+  // Low-to-Mid Chasm moving ferry for alternative traversal
   movingPlatforms.push({
     id: `mp-ts-${Math.floor(rng() * 9999)}`,
     x: 10 * TILE_SIZE,
-    y: 13 * TILE_SIZE,
-    width: TILE_SIZE * 3,
+    y: 12 * TILE_SIZE,
+    width: TILE_SIZE * 2.5,
     height: TILE_SIZE * 0.7,
     startX: 9 * TILE_SIZE,
-    startY: 13 * TILE_SIZE,
+    startY: 12 * TILE_SIZE,
     targetX: 21 * TILE_SIZE,
-    targetY: 13 * TILE_SIZE,
-    speed: 1.3,
+    targetY: 12 * TILE_SIZE,
+    speed: 1.25,
     currentT: 0,
     direction: 1,
     isVertical: false,
   });
 
-  // High vertical moving elevator for higher circles
-  if (circleId <= 6) {
-    movingPlatforms.push({
-      id: `mp-elev-${Math.floor(rng() * 9999)}`,
-      x: 19 * TILE_SIZE,
-      y: 11 * TILE_SIZE,
-      width: TILE_SIZE * 2.5,
-      height: TILE_SIZE * 0.7,
-      startX: 19 * TILE_SIZE,
-      startY: 11 * TILE_SIZE,
-      targetX: 19 * TILE_SIZE,
-      targetY: 7 * TILE_SIZE,
-      speed: 0.95,
-      currentT: 0.5,
-      direction: 1,
-      isVertical: true,
-    });
-  }
+  // EAST SPIRE (Precision climb to the exit)
+  platforms.push({ startX: 23 + j(), endX: 25 + j(), y: 12 }); // East Perch 1
+  platforms.push({ startX: 26 + j(), endX: 28, y: 9 }); // East Perch 2 (gap 4 from pedestal x=17, up 3)
+  platforms.push({ startX: 20 + j(), endX: 22 + j(), y: 7 }); // East High Step (turnback: gap 4, up 2)
+  platforms.push({ startX: 24, endX: 28, y: 5 }); // East Pinnacle (Exit Sanctuary)
 }
 
 function buildArchipelago(
@@ -452,68 +442,57 @@ function buildArchipelago(
   setExit: (x: number, y: number, ledgeY: number) => void
 ) {
   setSpawn(3, 17);
-  setExit(27, 4, 6);
+  setExit(26, 3, 5);
 
-  const j = () => Math.floor(rng() * 3) - 1;
+  const j = () => Math.floor(rng() * 2);
 
-  // Staggered floating islands forming a climbable archipelago
-  // Island 1: Lower West
-  platforms.push({ startX: 7 + j(), endX: 12 + j(), y: 16 });
+  // Staggered floating stepping stones with precision gaps and float chasms
+  // Island 1: Lower West (gap 2 from spawn)
+  platforms.push({ startX: 6 + j(), endX: 8 + j(), y: 16 });
 
-  // Island 2: Lower East
-  platforms.push({ startX: 18 + j(), endX: 24 + j(), y: 15 });
+  // Island 2: "Barely make it" leap (gap 5 tiles from x=8 to x=13, up 1)
+  platforms.push({ startX: 13 + j(), endX: 15 + j(), y: 15 });
 
-  // Island 3: Central Stepping Haven
-  platforms.push({ startX: 11 + j(), endX: 17 + j(), y: 13 });
+  // Island 3: Float Abyss (gap 6 tiles horizontally & 2 up: regular jump fails, holding float easily carries player!)
+  platforms.push({ startX: 21 + j(), endX: 23 + j(), y: 13 });
 
-  // Island 4: West Puzzle Sanctuary
-  platforms.push({ startX: 3 + j(), endX: 9 + j(), y: 10 });
+  // Island 4: East High Lookout
+  platforms.push({ startX: 26 + j(), endX: 28, y: 11 });
 
-  // Island 5: East High Lookout
-  platforms.push({ startX: 20 + j(), endX: 26 + j(), y: 9 });
+  // Island 5: Upper Traverse West (gap 5 tiles Westward)
+  platforms.push({ startX: 19 + j(), endX: 21 + j(), y: 9 });
 
-  // Island 6: Central High Overlook
+  // Island 6: Central Void Stepping Stone (gap 5 tiles across mid-air)
   platforms.push({
     startX: 12 + j(),
-    endX: 18 + j(),
-    y: 7,
+    endX: 14 + j(),
+    y: 8,
     tileType: circleId === 8 ? TileType.CRUMBLING : TileType.SOLID,
   });
 
-  // Island 7: Exit Plateau
-  platforms.push({ startX: 23, endX: 29, y: 6 });
+  // Island 7: West High Sanctuary with Puzzle (gap 6 tiles: float or dash across the sky!)
+  platforms.push({ startX: 4 + j(), endX: 6 + j(), y: 7 });
 
-  // Ferry 1 connecting Island 1 to Island 3
+  // Island 8: High Sky Perch
+  platforms.push({ startX: 12 + j(), endX: 14 + j(), y: 5 });
+
+  // Exit Island: High East
+  platforms.push({ startX: 23, endX: 28, y: 5 });
+
+  // Ferry connecting Island 8 to Exit Island across the massive upper gulf
   movingPlatforms.push({
-    id: `mp-arch-1-${Math.floor(rng() * 9999)}`,
-    x: 12 * TILE_SIZE,
-    y: 14 * TILE_SIZE,
-    width: TILE_SIZE * 2.8,
+    id: `mp-arch-top-${Math.floor(rng() * 9999)}`,
+    x: 16 * TILE_SIZE,
+    y: 5 * TILE_SIZE,
+    width: TILE_SIZE * 2.5,
     height: TILE_SIZE * 0.7,
-    startX: 11 * TILE_SIZE,
-    startY: 14 * TILE_SIZE,
-    targetX: 18 * TILE_SIZE,
-    targetY: 14 * TILE_SIZE,
+    startX: 15 * TILE_SIZE,
+    startY: 5 * TILE_SIZE,
+    targetX: 22 * TILE_SIZE,
+    targetY: 5 * TILE_SIZE,
     speed: 1.1,
     currentT: 0,
     direction: 1,
-    isVertical: false,
-  });
-
-  // Ferry 2 connecting Island 4 to Island 6
-  movingPlatforms.push({
-    id: `mp-arch-2-${Math.floor(rng() * 9999)}`,
-    x: 14 * TILE_SIZE,
-    y: 8 * TILE_SIZE,
-    width: TILE_SIZE * 2.8,
-    height: TILE_SIZE * 0.7,
-    startX: 9 * TILE_SIZE,
-    startY: 8 * TILE_SIZE,
-    targetX: 16 * TILE_SIZE,
-    targetY: 8 * TILE_SIZE,
-    speed: 1.0,
-    currentT: 0.5,
-    direction: -1,
     isVertical: false,
   });
 }
@@ -526,61 +505,64 @@ function buildCascadingTerraces(
   setSpawn: (x: number, y: number) => void,
   setExit: (x: number, y: number, ledgeY: number) => void
 ) {
-  // Mirrorable: 50% chance to spawn on East and exit on West!
   const mirror = rng() > 0.5;
 
   if (!mirror) {
     setSpawn(3, 17);
-    setExit(27, 4, 6);
+    setExit(26, 3, 5);
   } else {
     setSpawn(27, 17);
-    setExit(4, 4, 6);
+    setExit(4, 3, 5);
   }
 
-  const j = () => Math.floor(rng() * 3) - 1;
+  const j = () => Math.floor(rng() * 2);
 
   if (!mirror) {
-    // Left to Right staircase
-    platforms.push({ startX: 7 + j(), endX: 13 + j(), y: 16 });
-    platforms.push({ startX: 12 + j(), endX: 18 + j(), y: 14 });
-    platforms.push({ startX: 17 + j(), endX: 24 + j(), y: 12 });
-    platforms.push({ startX: 8 + j(), endX: 15 + j(), y: 10 }); // Mid-loopback
-    platforms.push({ startX: 2 + j(), endX: 8 + j(), y: 8 }); // West Puzzle Altar
+    // Left-to-Right ascending cascade with calibrated gaps
+    platforms.push({ startX: 7 + j(), endX: 9 + j(), y: 16 });
+    platforms.push({ startX: 14 + j(), endX: 16 + j(), y: 14 }); // gap 5, up 2 (precision jump)
+    platforms.push({ startX: 22 + j(), endX: 24 + j(), y: 12 }); // gap 6, up 2 (float chasm)
+
+    // Reversal terrace
+    platforms.push({ startX: 15 + j(), endX: 17 + j(), y: 10 }); // gap 5 Westward, up 2
+    platforms.push({ startX: 7 + j(), endX: 10 + j(), y: 8 }); // West Puzzle (gap 5)
+    platforms.push({
+      startX: 15 + j(),
+      endX: 17 + j(),
+      y: 7,
+      tileType: circleId === 8 ? TileType.CRUMBLING : TileType.SOLID,
+    });
+    platforms.push({ startX: 23, endX: 28, y: 5 }); // Exit
+  } else {
+    // Right-to-Left ascending cascade
+    platforms.push({ startX: 21 + j(), endX: 23 + j(), y: 16 });
+    platforms.push({ startX: 14 + j(), endX: 16 + j(), y: 14 }); // gap 5, up 2
+    platforms.push({ startX: 6 + j(), endX: 8 + j(), y: 12 }); // gap 6, up 2 (float chasm)
+
+    // Reversal terrace
+    platforms.push({ startX: 13 + j(), endX: 15 + j(), y: 10 });
+    platforms.push({ startX: 20 + j(), endX: 23 + j(), y: 8 }); // East Puzzle
     platforms.push({
       startX: 13 + j(),
-      endX: 20 + j(),
+      endX: 15 + j(),
       y: 7,
       tileType: circleId === 8 ? TileType.CRUMBLING : TileType.SOLID,
     });
-    platforms.push({ startX: 23, endX: 29, y: 6 }); // Exit
-  } else {
-    // Right to Left staircase
-    platforms.push({ startX: 18 + j(), endX: 24 + j(), y: 16 });
-    platforms.push({ startX: 13 + j(), endX: 19 + j(), y: 14 });
-    platforms.push({ startX: 7 + j(), endX: 14 + j(), y: 12 });
-    platforms.push({ startX: 16 + j(), endX: 23 + j(), y: 10 }); // Mid-loopback
-    platforms.push({ startX: 23 + j(), endX: 29, y: 8 }); // East Puzzle Altar
-    platforms.push({
-      startX: 11 + j(),
-      endX: 18 + j(),
-      y: 7,
-      tileType: circleId === 8 ? TileType.CRUMBLING : TileType.SOLID,
-    });
-    platforms.push({ startX: 2, endX: 8 + j(), y: 6 }); // Exit on West
+    platforms.push({ startX: 2, endX: 7, y: 5 }); // Exit on West
   }
 
-  // Connecting moving platform
+  // Connecting moving platform for mid-tier
   movingPlatforms.push({
     id: `mp-casc-${Math.floor(rng() * 9999)}`,
     x: 13 * TILE_SIZE,
     y: 11 * TILE_SIZE,
-    width: TILE_SIZE * 3,
+    width: TILE_SIZE * 2.5,
     height: TILE_SIZE * 0.7,
     startX: 11 * TILE_SIZE,
     startY: 11 * TILE_SIZE,
-    targetX: 18 * TILE_SIZE,
+    targetX: 19 * TILE_SIZE,
     targetY: 11 * TILE_SIZE,
-    speed: 1.15,
+    speed: 1.2,
     currentT: 0,
     direction: 1,
     isVertical: false,
@@ -596,52 +578,48 @@ function buildCentralCitadel(
   setExit: (x: number, y: number, ledgeY: number) => void
 ) {
   setSpawn(3, 17);
-  // Summit exit in the center or high right
-  setExit(27, 4, 6);
+  setExit(26, 3, 5);
 
-  const j = () => Math.floor(rng() * 3) - 1;
+  const j = () => Math.floor(rng() * 2);
 
-  // Outer West Buttress
-  platforms.push({ startX: 6 + j(), endX: 11 + j(), y: 16 });
+  // 1. West Moat Crossing (Spawn x: 2..5, y=18. Gap across the spiked moat to x=11 is 6 tiles! Requires float or dash to cross)
+  platforms.push({ startX: 11 + j(), endX: 13 + j(), y: 16 });
 
-  // Citadel Base Tier (Broad terrace)
-  platforms.push({ startX: 10 + j(), endX: 21 + j(), y: 14 });
+  // 2. Citadel Stair Tier 1 (gap 4, up 2)
+  platforms.push({ startX: 17 + j(), endX: 19 + j(), y: 14 });
 
-  // Outer East Buttress
-  platforms.push({ startX: 22 + j(), endX: 28 + j(), y: 12 });
+  // 3. Citadel East Outpost (gap 4, up 2)
+  platforms.push({ startX: 23 + j(), endX: 25 + j(), y: 12 });
 
-  // Citadel Mid Tier (West side) - Puzzle
-  platforms.push({ startX: 4 + j(), endX: 10 + j(), y: 10 });
-
-  // Citadel Inner Chamber / Bridge
+  // 4. Citadel Inner Core / Puzzle (gap 6 Westward: float glide across inner courtyard)
   platforms.push({
-    startX: 11 + j(),
-    endX: 19 + j(),
-    y: 9,
+    startX: 14 + j(),
+    endX: 17 + j(),
+    y: 10,
     tileType: circleId === 8 ? TileType.CRUMBLING : TileType.SOLID,
   });
 
-  // Citadel High East Balcony
-  platforms.push({ startX: 21 + j(), endX: 27 + j(), y: 8 });
+  // 5. Citadel West High Rampart (gap 5 Westward)
+  platforms.push({ startX: 7 + j(), endX: 9 + j(), y: 8 });
 
-  // Citadel Summit Platform
-  platforms.push({ startX: 12 + j(), endX: 18 + j(), y: 6 });
+  // 6. Citadel Summit (gap 5, up 2)
+  platforms.push({ startX: 14 + j(), endX: 16 + j(), y: 6 });
 
-  // Exit Sanctuary
-  platforms.push({ startX: 23, endX: 29, y: 6 });
+  // 7. Exit Watchtower (East)
+  platforms.push({ startX: 23, endX: 28, y: 5 });
 
-  // Moving platform connecting Citadel Summit to Exit
+  // Moving platform connecting Citadel Summit to Exit Watchtower
   movingPlatforms.push({
     id: `mp-cit-${Math.floor(rng() * 9999)}`,
     x: 18 * TILE_SIZE,
     y: 6 * TILE_SIZE,
-    width: TILE_SIZE * 2.8,
+    width: TILE_SIZE * 2.5,
     height: TILE_SIZE * 0.7,
     startX: 17 * TILE_SIZE,
     startY: 6 * TILE_SIZE,
-    targetX: 23 * TILE_SIZE,
+    targetX: 22 * TILE_SIZE,
     targetY: 6 * TILE_SIZE,
-    speed: 1.05,
+    speed: 1.15,
     currentT: 0,
     direction: 1,
     isVertical: false,
@@ -663,9 +641,9 @@ function placePuzzleObjective(
   pushBlocks: PushBlock[],
   rng: () => number
 ) {
-  // Find a good puzzle platform (prefer mid-height platforms at y around 8..11)
+  // Find a good puzzle platform (prefer mid-height platforms at y around 7..12)
   const candidatePlatforms = platforms.filter(
-    (p) => p.y >= 7 && p.y <= 12 && p.endX - p.startX >= 3
+    (p) => p.y >= 7 && p.y <= 12 && p.endX - p.startX >= 2
   );
   const targetPlat =
     candidatePlatforms.length > 0

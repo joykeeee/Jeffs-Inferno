@@ -53,11 +53,11 @@ export const ControlsModal: React.FC<ControlsModalProps> = ({ onClose }) => {
 
             <div className="flex items-center gap-2">
               <kbd className="px-2 py-1 bg-zinc-800 border border-zinc-700 rounded font-pixel text-[10px] text-zinc-200">
-                Shift / J
+                Shift / K / X
               </kbd>
             </div>
             <span className="text-zinc-300 font-retro text-sm flex items-center">
-              Spectral Dash (When unlocked)
+              Phantom Dash (Horizontal Burst + I-Frames)
             </span>
 
             <div className="flex items-center gap-2">
@@ -75,30 +75,30 @@ export const ControlsModal: React.FC<ControlsModalProps> = ({ onClose }) => {
               </kbd>
             </div>
             <span className="text-zinc-300 font-retro text-sm flex items-center">
-              Reroll Chamber Layout (Procedural Regen)
+              Reroll Chamber Layout (Generative Regen)
             </span>
           </div>
 
           {/* Ghost Mechanics Guidance */}
           <div className="bg-zinc-950/60 p-3.5 rounded-lg border border-zinc-800/80 flex flex-col gap-2">
             <h4 className="font-pixel text-[11px] text-cyan-300">
-              JEFF'S GHOST ABILITIES:
+              CHALLENGING PLATFORMING MECHANICS:
             </h4>
             <ul className="list-disc list-inside text-zinc-400 space-y-1 font-retro text-sm">
               <li>
-                <strong className="text-zinc-200 font-sans text-xs">Glide Hover:</strong> Hold Space or Jump while falling in midair to gently drift over wide spike pits.
+                <strong className="text-zinc-200 font-sans text-xs">Precision Jumps:</strong> Platform gaps are calibrated closely. Time your jump right off the ledge for maximum distance.
               </li>
               <li>
-                <strong className="text-zinc-200 font-sans text-xs">Puzzle Blocks:</strong> Walk into stone blocks to push them onto golden pressure plates.
+                <strong className="text-zinc-200 font-sans text-xs">Glide Hover (Hold Jump):</strong> Hold Jump in midair to buoyant-float across wide 6-8 tile chasms and abyssal spike pits where standard jumps fall short.
               </li>
               <li>
-                <strong className="text-zinc-200 font-sans text-xs">Crumbling Stone:</strong> Fractured blocks break 0.4 seconds after being stepped on, then reform.
+                <strong className="text-zinc-200 font-sans text-xs">Phantom Dash (Shift):</strong> Mid-air dash propels Jeff across perilous voids, grants invulnerability through hazards, and saves tight jumps.
               </li>
               <li>
-                <strong className="text-zinc-200 font-sans text-xs">Virgil's Boons:</strong> After completing each Circle, choose 1 of 3 roguelike relics to empower Jeff.
+                <strong className="text-zinc-200 font-sans text-xs">Puzzle Blocks & Crumbling Tiles:</strong> Push heavy stones onto plates and dash across fragile stones before they break!
               </li>
               <li>
-                <strong className="text-zinc-200 font-sans text-xs">Safe Pixel Art:</strong> Clean retro mechanics with zero blood or gore.
+                <strong className="text-zinc-200 font-sans text-xs">Virgil's Boons:</strong> Choose roguelike relics between circles to further boost dash cooldown, jump force, or float duration.
               </li>
             </ul>
           </div>

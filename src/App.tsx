@@ -36,8 +36,8 @@ const INITIAL_STATS: PlayerStats = {
   moveSpeedMultiplier: 1.0,
   jumpForceMultiplier: 1.0,
   floatDurationMultiplier: 1.0,
-  hasPhantomDash: false,
-  dashCooldownDuration: 2.0,
+  hasPhantomDash: true,
+  dashCooldownDuration: 1.6,
   soulMagnetRange: 0,
   hasSecondBreath: false,
   secondBreathUsed: false,
@@ -316,7 +316,7 @@ export default function App() {
         newEcto = newMaxEcto;
       } else if (relic.id === 'phantom_surge') {
         hasDash = true;
-        dashCd = 1.4;
+        dashCd = Math.max(0.75, prev.dashCooldownDuration * 0.55);
       } else if (relic.id === 'spectral_drift') {
         floatDur *= 1.75;
       } else if (relic.id === 'ethereal_magnet') {

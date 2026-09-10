@@ -19,7 +19,7 @@ export const ALL_RELICS: Relic[] = [
     id: 'phantom_surge',
     name: 'Phantom Surge',
     icon: '💨',
-    description: 'Enables Spectral Dash (Shift / Dash Button) with invulnerability.',
+    description: 'Supercharges Spectral Dash cooldown by ~50% for rapid chasm crossing.',
     tier: 'rare',
   },
   {
